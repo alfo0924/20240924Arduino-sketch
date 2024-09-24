@@ -143,8 +143,7 @@ void loop() {
 
 ---------------------------------
 
-## 程式碼解析  sketch_sep24c.ino
-## Arduino 雙LED控制程式解析
+## 程式碼解析  sketch_sep24c.ino | Arduino 雙LED控制程式解析
 
 ### setup() 函數
 
