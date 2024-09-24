@@ -141,3 +141,95 @@ void loop() {
 3. 最後兩行`digitalWrite(LED_BUILTIN, HIGH);`和`digitalWrite(LED_BUILTIN, LOW);`會立即執行，可能看不到效果。
 
 
+---------------------------------
+
+## 程式碼解析  sketch_sep24c.ino
+## Arduino 雙LED控制程式解析
+
+### setup() 函數
+
+```cpp
+void setup() {
+  Serial.begin(9600);
+  pinMode(4, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(4, LOW);
+  digitalWrite(LED_BUILTIN, LOW);
+}
+```
+
+這個函數在Arduino啟動時執行一次：
+
+1. 初始化串口通信，設定波特率為9600。
+2. 將引腳4和內建LED引腳設置為輸出模式。
+3. 初始狀態將兩個LED都設置為關閉。
+
+### loop() 函數
+
+```cpp
+void loop() {
+  int x = Serial.parseInt();
+  
+  for (int i = 0; i < x; i++) {
+    Serial.println("LED ON");
+    digitalWrite(4, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(500);
+    digitalWrite(4, LOW);
+    digitalWrite(LED_BUILTIN, HIGH);
+    Serial.println("LED OFF");
+    delay(500);
+    digitalWrite(4, HIGH);
+    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(LED_BUILTIN, HIGH);
+  }
+}
+```
+
+這個函數會不斷重複執行：
+
+1. 使用`Serial.parseInt()`讀取一個整數值`x`。
+2. 執行`x`次LED閃爍循環。
+3. 每次循環中：
+   - 打開引腳4的LED，關閉內建LED。
+   - 等待0.5秒。
+   - 關閉引腳4的LED，打開內建LED。
+   - 等待0.5秒。
+   - 再次切換LED狀態（這部分可能是多餘的）。
+
+## 功能說明
+
+這個程式提供了一種控制兩個LED交替閃爍的方法：
+
+1. **數字控制**：
+   - 輸入一個數字`n`，兩個LED將交替閃爍`n`次。
+   - 每次閃爍週期包括：
+     - 引腳4的LED亮0.5秒，同時內建LED滅0.5秒。
+     - 然後引腳4的LED滅0.5秒，同時內建LED亮0.5秒。
+
+2. **串口輸出**：
+   - 每次LED狀態改變時，通過串口輸出相應的信息。
+
+## 注意事項
+
+1. 程式中被註釋掉的部分包含了字符控制功能（'O'和'X'命令），但當前未啟用。
+2. 每次循環結束時的額外LED狀態切換可能是多餘的，不會產生可見效果。
+
+## 改進建議
+
+1. 考慮移除循環結束時多餘的LED控制指令，以簡化代碼。
+2. 在讀取串口數據前檢查是否有可用數據，以提高效率。例如：
+
+   ```cpp
+   if (Serial.available() > 0) {
+     int x = Serial.parseInt();
+     // 執行LED控制邏輯
+   }
+   ```
+
+
+
+ sketch_sep24c.ino 這個程式展示了Arduino控制多個LED的基本方法，實現了兩個LED的交替閃爍效果。通過串口輸入數字來控制閃爍次數，為互動提供了簡單的介面。
+
+
